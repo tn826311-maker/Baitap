@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - Todo App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+        .container-custom {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 450px;
+            width: 100%;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #999;
+            font-size: 14px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .error-message {
+            color: #f44336;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+        input.error, select.error {
+            border-color: #f44336;
+        }
+        .btn-register {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        .btn-register:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .divider {
+            text-align: center;
+            margin: 25px 0;
+            position: relative;
+            color: #999;
+            font-size: 14px;
+        }
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background: #e0e0e0;
+            z-index: 0;
+        }
+        .divider span {
+            background: white;
+            padding: 0 10px;
+            position: relative;
+            z-index: 1;
+        }
+        .link-login {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .link-login a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        .link-login a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .spinner-border {
+            color: #667eea;
+        }
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .message.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #4caf50;
+        }
+        .message.error {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #f44336;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .form-row .form-group {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-custom">
+        <div class="header">
+            <h1>📝 Tạo Tài Khoản</h1>
+            <p class="subtitle">Tham gia cộng đồng quản lý công việc</p>
+        </div>
+
+        <div class="message" id="messageBox"></div>
+
+        <form id="registerForm" onsubmit="handleRegister(event)">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName">Tên</label>
+                    <input 
+                        type="text" 
+                        id="firstName" 
+                        name="firstName" 
+                        placeholder="Tên của bạn" 
+                        required
+                        autocomplete="off"
+                    >
+                    <div class="error-message" id="firstNameError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="lastName">Họ</label>
+                    <input 
+                        type="text" 
+                        id="lastName" 
+                        name="lastName" 
+                        placeholder="Họ của bạn" 
+                        required
+                        autocomplete="off"
+                    >
+                    <div class="error-message" id="lastNameError"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="username">Tên Đăng Nhập</label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    placeholder="Chọn tên đăng nhập" 
+                    required
+                    autocomplete="off"
+                >
+                <div class="error-message" id="usernameError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder="Nhập email" 
+                    required
+                    autocomplete="off"
+                >
+                <div class="error-message" id="emailError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Mật Khẩu</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    placeholder="Nhập mật khẩu (ít nhất 6 ký tự)" 
+                    required
+                    autocomplete="off"
+                >
+                <div class="error-message" id="passwordError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Xác Nhận Mật Khẩu</label>
+                <input 
+                    type="password" 
+                    id="confirmPassword" 
+                    name="confirmPassword" 
+                    placeholder="Nhập lại mật khẩu" 
+                    required
+                    autocomplete="off"
+                >
+                <div class="error-message" id="confirmPasswordError"></div>
+            </div>
+
+            <button type="submit" class="btn-register" id="registerBtn">Tạo Tài Khoản</button>
+
+            <div class="loading-spinner" id="loadingSpinner">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Đang tải...</span>
+                </div>
+            </div>
+        </form>
+
+        <div class="divider">
+            <span>Hoặc</span>
+        </div>
+
+        <div class="link-login">
+            <p>Đã có tài khoản? <a href="/login">Đăng nhập tại đây</a></p>
+            <p><a href="/">← Quay lại trang chính</a></p>
+        </div>
+    </div>
+
+    <script>
+        async function handleRegister(event) {
+            event.preventDefault();
+            
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const messageBox = document.getElementById('messageBox');
+            const registerBtn = document.getElementById('registerBtn');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+
+            // Reset errors
+            document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('input').forEach(el => el.classList.remove('error'));
+            messageBox.style.display = 'none';
+
+            // Validation
+            let hasError = false;
+            
+            if (!firstName) {
+                showError('firstNameError', 'Vui lòng nhập tên');
+                document.getElementById('firstName').classList.add('error');
+                hasError = true;
+            }
+            
+            if (!lastName) {
+                showError('lastNameError', 'Vui lòng nhập họ');
+                document.getElementById('lastName').classList.add('error');
+                hasError = true;
+            }
+            
+            if (!username) {
+                showError('usernameError', 'Vui lòng nhập tên đăng nhập');
+                document.getElementById('username').classList.add('error');
+                hasError = true;
+            }
+            
+            if (!email) {
+                showError('emailError', 'Vui lòng nhập email');
+                document.getElementById('email').classList.add('error');
+                hasError = true;
+            } else if (!isValidEmail(email)) {
+                showError('emailError', 'Email không hợp lệ');
+                document.getElementById('email').classList.add('error');
+                hasError = true;
+            }
+            
+            if (!password) {
+                showError('passwordError', 'Vui lòng nhập mật khẩu');
+                document.getElementById('password').classList.add('error');
+                hasError = true;
+            } else if (password.length < 6) {
+                showError('passwordError', 'Mật khẩu phải ít nhất 6 ký tự');
+                document.getElementById('password').classList.add('error');
+                hasError = true;
+            }
+            
+            if (password !== confirmPassword) {
+                showError('confirmPasswordError', 'Mật khẩu không khớp');
+                document.getElementById('confirmPassword').classList.add('error');
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            registerBtn.disabled = true;
+            loadingSpinner.style.display = 'block';
+
+            try {
+                const response = await fetch('/api/users/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        firstName, 
+                        lastName, 
+                        username, 
+                        email, 
+                        password 
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Save token and user info
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    showMessage(messageBox, 'Đăng ký thành công! Đang chuyển hướng...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/dashboard';
+                    }, 1500);
+                } else {
+                    showMessage(messageBox, data.message || 'Đăng ký thất bại', 'error');
+                }
+            } catch (error) {
+                showMessage(messageBox, 'Lỗi kết nối. Vui lòng thử lại!', 'error');
+                console.error('Error:', error);
+            } finally {
+                registerBtn.disabled = false;
+                loadingSpinner.style.display = 'none';
+            }
+        }
+
+        function showError(elementId, message) {
+            const errorEl = document.getElementById(elementId);
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+        }
+
+        function showMessage(messageBox, message, type) {
+            messageBox.textContent = message;
+            messageBox.className = `message ${type}`;
+            messageBox.style.display = 'block';
+        }
+
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+    </script>
+</body>
+</html>

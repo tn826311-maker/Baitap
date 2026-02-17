@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - Todo App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container-custom {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 20px;
+        }
+        h1 {
+            color: #667eea;
+            font-weight: bold;
+            margin: 0;
+        }
+        .user-info {
+            text-align: right;
+        }
+        .user-info p {
+            margin: 5px 0;
+            color: #666;
+        }
+        .logout-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        .logout-btn:hover {
+            background: #ff5252;
+        }
+        .input-section {
+            margin-bottom: 30px;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .input-group input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .input-group select {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+        .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .btn-add {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        .task-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            color: #999;
+            font-weight: bold;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 600px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        .stat-box {
+            background: #f5f7fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+        .task-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .task-item {
+            background: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .task-item:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transform: translateX(5px);
+        }
+        .task-item.completed {
+            background: #e8f5e9;
+            border-left-color: #4caf50;
+            opacity: 0.7;
+        }
+        .task-info {
+            flex: 1;
+            min-width: 200px;
+        }
+        .task-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .task-meta {
+            font-size: 12px;
+            color: #999;
+            line-height: 1.5;
+        }
+        .task-status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .status-pending {
+            background: #fff3cd;
+            color: #ff9800;
+        }
+        .status-in-progress {
+            background: #cce5ff;
+            color: #2196f3;
+        }
+        .status-completed {
+            background: #c8e6c9;
+            color: #4caf50;
+        }
+        .task-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        .btn-complete, .btn-delete, .btn-assign {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+        .btn-complete {
+            background: #4caf50;
+            color: white;
+        }
+        .btn-complete:hover {
+            background: #45a049;
+        }
+        .btn-delete {
+            background: #ff6b6b;
+            color: white;
+        }
+        .btn-delete:hover {
+            background: #ff5252;
+        }
+        .btn-assign {
+            background: #2196f3;
+            color: white;
+        }
+        .btn-assign:hover {
+            background: #0b7dda;
+        }
+        .progress-container {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f5f7fa;
+            border-radius: 8px;
+        }
+        .progress-label {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .progress-bar-custom {
+            width: 100%;
+            height: 25px;
+            background: #e0e0e0;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        /* Modal Styles */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 999;
+        }
+        .modal-backdrop.show {
+            display: block;
+        }
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            z-index: 1000;
+            min-width: 300px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            display: none;
+        }
+        .modal.show {
+            display: block;
+        }
+        .modal-header {
+            margin-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 15px;
+        }
+        .modal-header h3 {
+            color: #667eea;
+            margin: 0;
+        }
+        .modal-body {
+            margin-bottom: 20px;
+        }
+        .modal-body select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        .modal-footer button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .btn-confirm {
+            background: #667eea;
+            color: white;
+        }
+        .btn-confirm:hover {
+            background: #764ba2;
+        }
+        .btn-cancel {
+            background: #e0e0e0;
+            color: #333;
+        }
+        .btn-cancel:hover {
+            background: #d0d0d0;
+        }
+        .assigned-users {
+            font-size: 11px;
+            color: #666;
+            margin-top: 5px;
+            padding: 5px;
+            background: #f0f0f0;
+            border-radius: 4px;
+        }
+        .assigned-users strong {
+            color: #667eea;
+        }
+        .completed-users {
+            font-size: 11px;
+            color: #4caf50;
+            margin-top: 5px;
+            padding: 5px;
+            background: #e8f5e9;
+            border-radius: 4px;
+        }
+        .completed-users strong {
+            color: #2e7d32;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-custom">
+        <div class="header">
+            <h1>📋 Công Việc Của Tôi</h1>
+            <div class="user-info" id="userInfo" style="display: none;">
+                <p><strong id="currentUser"></strong></p>
+                <p id="currentRole"></p>
+                <button class="logout-btn" onclick="logout()">Đăng Xuất</button>
+            </div>
+            <div id="notLogged" style="display: block;">
+                <a href="/login" class="btn-logout" style="background: #667eea; color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none; font-size: 14px;">Đăng Nhập</a>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats" id="stats" style="display: none;">
+            <div class="stat-box">
+                <div class="stat-number" id="totalTasks">0</div>
+                <div class="stat-label">Tổng Công Việc</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="completeTasks">0</div>
+                <div class="stat-label">Hoàn Thành</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="incompleteTasks">0</div>
+                <div class="stat-label">Chưa Hoàn Thành</div>
+            </div>
+        </div>
+
+        <!-- Input Section -->
+        <div class="input-section" id="inputSection" style="display: none;">
+            <div class="input-group">
+                <input type="text" id="taskInput" placeholder="Nhập công việc mới..." autocomplete="off">
+                <select id="prioritySelect">
+                    <option value="low">Thấp</option>
+                    <option value="medium" selected>Trung Bình</option>
+                    <option value="high">Cao</option>
+                </select>
+                <button class="btn-add" onclick="addTask()">➕ Thêm</button>
+            </div>
+        </div>
+
+        <!-- Task Tabs -->
+        <div class="task-tabs" id="taskTabs" style="display: none;">
+            <button class="tab-btn active" onclick="filterTasks('all')">Tất Cả</button>
+            <button class="tab-btn" onclick="filterTasks('pending')">Chưa Làm</button>
+            <button class="tab-btn" onclick="filterTasks('completed')">Hoàn Thành</button>
+        </div>
+
+        <!-- Task List -->
+        <ul class="task-list" id="taskList">
+            <li class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <p>Bạn chưa có công việc nào. Hãy tạo công việc mới!</p>
+            </li>
+        </ul>
+
+        <!-- Progress Bar -->
+        <div class="progress-container" id="progressContainer" style="display: none;">
+            <div class="progress-label">📊 Tiến Độ Hoàn Thành</div>
+            <div class="progress-bar-custom">
+                <div class="progress-fill" id="progressBar" style="width: 0%;"></div>
+            </div>
+            <div style="text-align: right; font-size: 12px; color: #666;">
+                <span id="progressText">0/0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assign Modal -->
+    <div class="modal-backdrop" id="assignModalBackdrop"></div>
+    <div class="modal" id="assignModal">
+        <div class="modal-header">
+            <h3>👤 Phân Công Công Việc</h3>
+        </div>
+        <div class="modal-body">
+            <label>Chọn người dùng:</label>
+            <select id="userSelect" style="margin-top: 10px;">
+                <option value="">-- Chọn người dùng --</option>
+            </select>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel" onclick="closeAssignModal()">Hủy</button>
+            <button class="btn-confirm" onclick="confirmAssign()">Xác Nhận</button>
+        </div>
+    </div>
+
+    <script>
+        let tasks = [];
+        let currentUser = null;
+        let currentFilter = 'all';
+        let token = null;
+        let selectedTaskForAssign = null;
+        let allUsers = [];
+
+        // Check if user is logged in
+        function checkLogin() {
+            token = localStorage.getItem('token');
+            currentUser = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
+            
+            if (currentUser && token) {
+                loadTasks();
+                loadAllUsers();
+                document.getElementById('userInfo').style.display = 'block';
+                document.getElementById('notLogged').style.display = 'none';
+                document.getElementById('inputSection').style.display = 'block';
+                document.getElementById('taskTabs').style.display = 'flex';
+                document.getElementById('stats').style.display = 'grid';
+                document.getElementById('progressContainer').style.display = 'block';
+                document.getElementById('currentUser').textContent = currentUser.username;
+                document.getElementById('currentRole').textContent = `Vai trò: ${currentUser.role === 'admin' ? '👨‍⚖️ Admin' : '👤 Người dùng'}`;
+            } else {
+                document.getElementById('userInfo').style.display = 'none';
+                document.getElementById('notLogged').style.display = 'block';
+                document.getElementById('inputSection').style.display = 'none';
+                document.getElementById('taskTabs').style.display = 'none';
+                document.getElementById('stats').style.display = 'none';
+                document.getElementById('progressContainer').style.display = 'none';
+            }
+        }
+
+        // Load all users
+        async function loadAllUsers() {
+            try {
+                const response = await fetch('/api/users/all');
+                const data = await response.json();
+                allUsers = data.filter(u => u._id !== currentUser.id);
+                populateUserSelect();
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
+        }
+
+        // Populate user select dropdown
+        function populateUserSelect() {
+            const userSelect = document.getElementById('userSelect');
+            const existingOptions = userSelect.querySelectorAll('option[value!=""]');
+            existingOptions.forEach(opt => opt.remove());
+
+            allUsers.forEach(user => {
+                const option = document.createElement('option');
+                option.value = user._id;
+                option.textContent = `${user.firstName} ${user.lastName} (@${user.username})`;
+                userSelect.appendChild(option);
+            });
+        }
+
+        // Load tasks
+        async function loadTasks() {
+            try {
+                const response = await fetch('/api/tasks/all');
+                const data = await response.json();
+                tasks = data.tasks || [];
+                updateUI();
+            } catch (error) {
+                console.error('Error loading tasks:', error);
+            }
+        }
+
+        // Add task
+        async function addTask() {
+            const title = document.getElementById('taskInput').value.trim();
+            const priority = document.getElementById('prioritySelect').value;
+
+            if (!title) {
+                alert('Vui lòng nhập công việc!');
+                return;
+            }
+
+            if (!token) {
+                alert('Vui lòng đăng nhập trước!');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/tasks/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        title,
+                        priority,
+                        description: '',
+                    }),
+                });
+
+                if (response.ok) {
+                    document.getElementById('taskInput').value = '';
+                    loadTasks();
+                } else {
+                    alert('Lỗi khi thêm công việc!');
+                }
+            } catch (error) {
+                console.error('Error adding task:', error);
+            }
+        }
+
+        // Delete task
+        async function deleteTask(taskId) {
+            if (!confirm('Bạn có chắc muốn xóa công việc này?')) return;
+
+            try {
+                const response = await fetch(`/api/tasks/${taskId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (response.ok) {
+                    loadTasks();
+                } else {
+                    alert('Lỗi khi xóa công việc!');
+                }
+            } catch (error) {
+                console.error('Error deleting task:', error);
+            }
+        }
+
+        // Complete task
+        async function completeTask(taskId) {
+            try {
+                const response = await fetch(`/api/tasks/${taskId}/complete`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (response.ok) {
+                    loadTasks();
+                } else {
+                    const data = await response.json();
+                    alert(data.message || 'Lỗi khi hoàn thành công việc!');
+                }
+            } catch (error) {
+                console.error('Error completing task:', error);
+            }
+        }
+
+        // Open assign modal
+        function openAssignModal(taskId) {
+            selectedTaskForAssign = taskId;
+            document.getElementById('userSelect').value = '';
+            document.getElementById('assignModal').classList.add('show');
+            document.getElementById('assignModalBackdrop').classList.add('show');
+        }
+
+        // Close assign modal
+        function closeAssignModal() {
+            document.getElementById('assignModal').classList.remove('show');
+            document.getElementById('assignModalBackdrop').classList.remove('show');
+            selectedTaskForAssign = null;
+        }
+
+        // Confirm assign
+        async function confirmAssign() {
+            const userId = document.getElementById('userSelect').value;
+            if (!userId) {
+                alert('Vui lòng chọn người dùng!');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/tasks/${selectedTaskForAssign}/assign`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ userId }),
+                });
+
+                if (response.ok) {
+                    closeAssignModal();
+                    loadTasks();
+                } else {
+                    const data = await response.json();
+                    alert(data.message || 'Lỗi khi phân công công việc!');
+                }
+            } catch (error) {
+                console.error('Error assigning task:', error);
+            }
+        }
+
+        // Filter tasks
+        function filterTasks(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            updateUI();
+        }
+
+        // Update UI
+        function updateUI() {
+            let filteredTasks = tasks;
+
+            if (currentFilter === 'pending') {
+                filteredTasks = tasks.filter(t => !t.isCompleted);
+            } else if (currentFilter === 'completed') {
+                filteredTasks = tasks.filter(t => t.isCompleted);
+            }
+
+            const taskList = document.getElementById('taskList');
+            
+            if (filteredTasks.length === 0) {
+                taskList.innerHTML = `
+                    <li class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <p>${currentFilter === 'pending' ? 'Không có công việc chưa hoàn thành' : currentFilter === 'completed' ? 'Không có công việc nào hoàn thành' : 'Không có công việc nào'}</p>
+                    </li>
+                `;
+            } else {
+                taskList.innerHTML = filteredTasks.map(task => {
+                    const isOwner = currentUser && task.createdBy._id === currentUser.id;
+                    const isAssigned = currentUser && task.assignedTo.some(u => u._id === currentUser.id);
+                    const userCompleted = currentUser && task.completedBy.some(cb => cb.userId._id === currentUser.id);
+                    const assignedUsersDisplay = task.assignedTo.map(u => `${u.firstName} ${u.lastName}`).join(', ');
+                    const completedUsersDisplay = task.completedBy.map(cb => `${cb.userId.firstName} ${cb.userId.lastName}`).join(', ');
+                    
+                    return `
+                        <li class="task-item ${task.isCompleted ? 'completed' : ''}">
+                            <div style="flex: 1; min-width: 250px;">
+                                <div class="task-info">
+                                    <div class="task-title">${task.title}</div>
+                                    <div class="task-meta">
+                                        <span class="task-status status-${task.status}">${getStatusText(task.status)}</span>
+                                        ${task.priority ? `<span style="color: ${getPriorityColor(task.priority)};">●</span> <strong>${getPriorityText(task.priority)}</strong>` : ''}
+                                        ${task.createdBy ? `| 👤 Tạo bởi: <strong>${task.createdBy.firstName} ${task.createdBy.lastName}</strong>` : ''}
+                                    </div>
+                                    ${task.assignedTo.length > 0 ? `<div class="assigned-users">👥 <strong>Phân công cho:</strong> ${assignedUsersDisplay}</div>` : ''}
+                                    ${task.completedBy.length > 0 ? `<div class="completed-users">✅ <strong>Đã hoàn thành bởi:</strong> ${completedUsersDisplay}</div>` : ''}
+                                </div>
+                            </div>
+                            <div class="task-actions">
+                                ${isAssigned && !userCompleted && !task.isCompleted ? `<button class="btn-complete" onclick="completeTask('${task._id}')">✓ Hoàn Thành</button>` : ''}
+                                ${isOwner || (currentUser && currentUser.role === 'admin') ? `<button class="btn-delete" onclick="deleteTask('${task._id}')">🗑 Xóa</button>` : ''}
+                                ${(isOwner || (currentUser && currentUser.role === 'admin')) && !task.isCompleted ? `<button class="btn-assign" onclick="openAssignModal('${task._id}')">👤 Phân Công</button>` : ''}
+                            </div>
+                        </li>
+                    `;
+                }).join('');
+            }
+
+            updateStats();
+            updateProgress();
+        }
+
+        // Update stats
+        function updateStats() {
+            const total = tasks.length;
+            const completed = tasks.filter(t => t.isCompleted).length;
+            const incomplete = total - completed;
+
+            document.getElementById('totalTasks').textContent = total;
+            document.getElementById('completeTasks').textContent = completed;
+            document.getElementById('incompleteTasks').textContent = incomplete;
+        }
+
+        // Update progress
+        function updateProgress() {
+            const total = tasks.length;
+            const completed = tasks.filter(t => t.isCompleted).length;
+            const percentage = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = `${completed}/${total}`;
+            document.getElementById('progressBar').textContent = percentage > 0 ? percentage + '%' : '';
+        }
+
+        // Get status text
+        function getStatusText(status) {
+            const statusMap = { 'pending': 'Chưa Làm', 'in-progress': 'Đang Làm', 'completed': 'Hoàn Thành' };
+            return statusMap[status] || status;
+        }
+
+        // Get priority text
+        function getPriorityText(priority) {
+            const priorityMap = { 'low': 'Thấp', 'medium': 'Trung Bình', 'high': 'Cao' };
+            return priorityMap[priority] || priority;
+        }
+
+        // Get priority color
+        function getPriorityColor(priority) {
+            const colorMap = { 'low': '#4caf50', 'medium': '#ff9800', 'high': '#f44336' };
+            return colorMap[priority] || '#999';
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/';
+        }
+
+        // Close modal on backdrop click
+        document.getElementById('assignModalBackdrop').addEventListener('click', closeAssignModal);
+
+        // Initialize
+        checkLogin();
+    </script>
+</body>
+</html>
