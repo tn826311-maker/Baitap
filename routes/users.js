@@ -8,6 +8,9 @@ const router = express.Router();
 // Register user
 router.post('/register', async (req, res) => {
   try {
+    console.log('Register endpoint called');
+    console.log('Body received:', req.body);
+    
     const { username, email, password, firstName, lastName, role } = req.body;
 
     // Check if user already exists
@@ -46,6 +49,7 @@ router.post('/register', async (req, res) => {
       },
     });
   } catch (error) {
+    console.error('Register error:', error);
     res.status(500).json({ message: error.message });
   }
 });
