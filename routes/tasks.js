@@ -5,6 +5,24 @@ const auth = require('../middleware/auth');
 
 const router = express.Router();
 
+// Get all tasks (default route)
+router.get('/', async (req, res) => {
+  try {
+    const tasks = await Task.find()
+      .populate('createdBy', 'username firstName lastName')
+      .populate('assignedTo', 'username firstName lastName')
+      .populate('completedBy.userId', 'username firstName lastName');
+    
+    res.json({
+      message: 'All tasks retrieved successfully',
+      count: tasks.length,
+      tasks,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // Create task
 router.post('/create', auth, async (req, res) => {
   try {

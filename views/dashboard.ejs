@@ -521,7 +521,10 @@
             try {
                 const response = await fetch('/api/users/all');
                 const data = await response.json();
-                allUsers = data.filter(u => u._id !== currentUser.id);
+                console.log('All users from API:', data);
+                // Filter to show only normal users (for admin to assign)
+                allUsers = data.filter(u => u.role === 'normal');
+                console.log('Normal users for assign dropdown:', allUsers);
                 populateUserSelect();
             } catch (error) {
                 console.error('Error loading users:', error);
@@ -531,8 +534,15 @@
         // Populate user select dropdown
         function populateUserSelect() {
             const userSelect = document.getElementById('userSelect');
-            const existingOptions = userSelect.querySelectorAll('option[value!=""]');
-            existingOptions.forEach(opt => opt.remove());
+            if (!userSelect) {
+                console.error('userSelect element not found');
+                return;
+            }
+            
+            // Keep the first option (placeholder)
+            while (userSelect.options.length > 1) {
+                userSelect.remove(1);
+            }
 
             allUsers.forEach(user => {
                 const option = document.createElement('option');
@@ -540,6 +550,7 @@
                 option.textContent = `${user.firstName} ${user.lastName} (@${user.username})`;
                 userSelect.appendChild(option);
             });
+            console.log(`Populated ${allUsers.length} normal users in dropdown`);
         }
 
         // Load tasks
