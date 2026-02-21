@@ -34,7 +34,7 @@ router.post('/create', auth, async (req, res) => {
       priority,
       dueDate,
       createdBy: req.userId,
-      assignedTo: assignedTo || [req.userId],
+      assignedTo: assignedTo || [],
     });
 
     await task.save();
