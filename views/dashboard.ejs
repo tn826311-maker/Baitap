@@ -735,7 +735,7 @@
                             <div class="task-actions">
                                 ${isAssigned && !userCompleted && !task.isCompleted ? `<button class="btn-complete" onclick="completeTask('${task._id}')">✓ Hoàn Thành</button>` : ''}
                                 ${isOwner || (currentUser && currentUser.role === 'admin') ? `<button class="btn-delete" onclick="deleteTask('${task._id}')">🗑 Xóa</button>` : ''}
-                                ${(isOwner || (currentUser && currentUser.role === 'admin')) && !task.isCompleted ? `<button class="btn-assign" onclick="openAssignModal('${task._id}')">👤 Phân Công</button>` : ''}
+                                ${(currentUser && currentUser.role === 'admin' && !task.isCompleted) ? `<button class="btn-assign" onclick="openAssignModal('${task._id}')">👤 Phân Công</button>` : ''}
                             </div>
                         </li>
                     `;
