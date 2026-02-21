@@ -1,29 +1,29 @@
-# 📋 Todo List Application
+# Todo List Application
 
 Một ứng dụng Todo List hoàn chỉnh với 3 level chức năng từ API backend đến giao diện web với hệ thống phân quyền.
 
-## 🎯 Features
+## Features
 
 ### Level 1: Backend APIs
-- ✅ User authentication với password hashing (bcryptjs)
-- ✅ MongoDB collections cho User và Task
-- ✅ APIs: getAllTasks, getTasksByUser, getTodayTasks, getIncompleteTasks, getTasksByLastname
+-  User authentication với password hashing (bcryptjs)
+- MongoDB collections cho User và Task
+-  APIs: getAllTasks, getTasksByUser, getTodayTasks, getIncompleteTasks, getTasksByLastname
 
 ### Level 2: Web Interface
-- ✅ EJS templates cho register, login, dashboard
-- ✅ Task input với nút add
-- ✅ Dynamic task list với delete buttons
-- ✅ Bootstrap progress bar
-- ✅ Filter tabs (All, Pending, Completed)
-- ✅ Responsive design
+- EJS templates cho register, login, dashboard
+- Task input với nút add
+- Dynamic task list với delete buttons
+- Bootstrap progress bar
+- Filter tabs (All, Pending, Completed)
+- Responsive design
 
 ### Level 3: Role & Permission System
-- ✅ Admin và Normal roles
-- ✅ Assign tasks to multiple users
-- ✅ Task completion when all assigned users complete
-- ✅ Permission-based actions
+- Admin và Normal roles
+- Assign tasks to multiple users
+- Task completion when all assigned users complete
+- Permission-based actions
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Backend**: Node.js + Express.js
 - **Database**: MongoDB
@@ -31,7 +31,7 @@ Một ứng dụng Todo List hoàn chỉnh với 3 level chức năng từ API b
 - **Authentication**: JWT
 - **Password Encryption**: bcryptjs
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 ├── config/               # Database configuration
@@ -44,7 +44,7 @@ Một ứng dụng Todo List hoàn chỉnh với 3 level chức năng từ API b
 └── DOCUMENTATION.md     # Detailed documentation
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Node.js 14+
@@ -77,7 +77,7 @@ npm run dev
 
 Visit `http://localhost:3000`
 
-## 📖 API Endpoints
+## API Endpoints
 
 ### User Routes
 - `POST /api/users/register` - Register new user
@@ -96,13 +96,13 @@ Visit `http://localhost:3000`
 - `PUT /api/tasks/:taskId/assign` - Assign task to user (Auth required)
 - `DELETE /api/tasks/:taskId` - Delete task (Auth required)
 
-## 🔐 Authentication
+## Authentication
 
 - Password hashed with bcryptjs (10 salt rounds)
 - JWT tokens issued on login
 - Include token in Authorization header: `Bearer {token}`
 
-## 👥 User Roles
+## User Roles
 
 ### Admin
 - Can create tasks
@@ -116,7 +116,7 @@ Visit `http://localhost:3000`
 - Can only delete own tasks
 - Can complete assigned tasks
 
-## 📋 Database Schema
+## Database Schema
 
 ### User Collection
 ```javascript
@@ -147,7 +147,7 @@ Visit `http://localhost:3000`
 }
 ```
 
-## 🎨 UI Features
+## UI Features
 
 - Modern gradient design
 - Bootstrap 5 styling
@@ -158,25 +158,25 @@ Visit `http://localhost:3000`
 - Priority indicators
 - User info display
 
-## 📝 Test Scenarios
+## Test Scenarios
 
 1. **Registration & Login**: Create account and sign in
 2. **Task Management**: Add, delete, filter tasks
 3. **Assignment**: Assign tasks to multiple users, complete collaboratively
 4. **Progress Tracking**: Monitor completion percentage
 
-## 🔍 Development
+## Development
 
 The application is fully functional with all 3 levels implemented. Refer to `DOCUMENTATION.md` for detailed information about each level.
 
-## 📄 License
+## License
 
 ISC
 
-## 👨‍💻 Author
+## Author
 
 Developer
 
 ---
 
-**Status**: All 3 Levels Implemented ✅
+**Status**: All 3 Levels Implemented 
